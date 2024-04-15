@@ -23,7 +23,7 @@ MODELS : Dict[str, ModelValue] =\
 		'path': resolve_relative_path('../.assets/models/open_nsfw.onnx')
 	}
 }
-MAX_PROBABILITY = 0.80
+MAX_PROBABILITY = 1.0
 MAX_RATE = 5
 STREAM_COUNTER = 0
 
@@ -62,9 +62,13 @@ def analyse_stream(frame : Frame, fps : float) -> bool:
 
 
 def prepare_frame(frame : Frame) -> Frame:
-	frame = cv2.resize(frame, (224, 224)).astype(numpy.float32)
-	frame -= numpy.array([ 104, 117, 123 ]).astype(numpy.float32)
-	frame = numpy.expand_dims(frame, axis = 0)
+	if(frame is not None and frame.size > 1):
+		frame = cv2.resize(frame, (224, 224)).astype(numpy.float32)
+	else:
+		frame = numpy.zeros((224, 224, 3), dtype=numpy.float32)
+	
+		frame -= numpy.array([ 104, 117, 123 ]).astype(numpy.float32)
+		frame = numpy.expand_dims(frame, axis = 0)
 	return frame
 
 
