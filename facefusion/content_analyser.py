@@ -67,8 +67,8 @@ def prepare_frame(frame : Frame) -> Frame:
 	else:
 		frame = numpy.zeros((224, 224, 3), dtype=numpy.float32)
 	
-		frame -= numpy.array([ 104, 117, 123 ]).astype(numpy.float32)
-		frame = numpy.expand_dims(frame, axis = 0)
+	frame -= numpy.array([ 104, 117, 123 ]).astype(numpy.float32)
+	frame = numpy.expand_dims(frame, axis = 0)
 	return frame
 
 
