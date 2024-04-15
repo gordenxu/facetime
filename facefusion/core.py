@@ -44,13 +44,13 @@ def cli() -> None:
 	# misc
 	group_misc = program.add_argument_group('misc')
 	group_misc.add_argument('--skip-download', help = wording.get('skip_download_help'), action = 'store_true')
-	group_misc.add_argument('--headless', help = wording.get('headless_help'), action = 'store_true')
+	group_misc.add_argument('--headless', help = wording.get('headless_help'), default = True, action = 'store_true')
 	group_misc.add_argument('--log-level', help = wording.get('log_level_help'), default = 'info', choices = logger.get_log_levels())
 	# execution
 	execution_providers = encode_execution_providers(onnxruntime.get_available_providers())
 	group_execution = program.add_argument_group('execution')
-	group_execution.add_argument('--execution-providers', help = wording.get('execution_providers_help').format(choices = ', '.join(execution_providers)), default = [ 'cpu' ], choices = execution_providers, nargs = '+', metavar = 'EXECUTION_PROVIDERS')
-	group_execution.add_argument('--execution-thread-count', help = wording.get('execution_thread_count_help'), type = int, default = 4, choices = facefusion.choices.execution_thread_count_range, metavar = create_metavar(facefusion.choices.execution_thread_count_range))
+	group_execution.add_argument('--execution-providers', help = wording.get('execution_providers_help').format(choices = ', '.join(execution_providers)), default = [ 'cuda' ], choices = execution_providers, nargs = '+', metavar = 'EXECUTION_PROVIDERS')
+	group_execution.add_argument('--execution-thread-count', help = wording.get('execution_thread_count_help'), type = int, default = 10, choices = facefusion.choices.execution_thread_count_range, metavar = create_metavar(facefusion.choices.execution_thread_count_range))
 	group_execution.add_argument('--execution-queue-count', help = wording.get('execution_queue_count_help'), type = int, default = 1, choices = facefusion.choices.execution_queue_count_range, metavar = create_metavar(facefusion.choices.execution_queue_count_range))
 	group_execution.add_argument('--max-memory', help = wording.get('max_memory_help'), type = int, choices = facefusion.choices.max_memory_range, metavar = create_metavar(facefusion.choices.max_memory_range))
 	# face analyser
@@ -59,8 +59,8 @@ def cli() -> None:
 	group_face_analyser.add_argument('--face-analyser-age', help = wording.get('face_analyser_age_help'), choices = facefusion.choices.face_analyser_ages)
 	group_face_analyser.add_argument('--face-analyser-gender', help = wording.get('face_analyser_gender_help'), choices = facefusion.choices.face_analyser_genders)
 	group_face_analyser.add_argument('--face-detector-model', help = wording.get('face_detector_model_help'), default = 'retinaface', choices = facefusion.choices.face_detector_models)
-	group_face_analyser.add_argument('--face-detector-size', help = wording.get('face_detector_size_help'), default = '640x640', choices = facefusion.choices.face_detector_sizes)
-	group_face_analyser.add_argument('--face-detector-score', help = wording.get('face_detector_score_help'), type = float, default = 0.5, choices = facefusion.choices.face_detector_score_range, metavar = create_metavar(facefusion.choices.face_detector_score_range))
+	group_face_analyser.add_argument('--face-detector-size', help = wording.get('face_detector_size_help'), default = '320x320', choices = facefusion.choices.face_detector_sizes)
+	group_face_analyser.add_argument('--face-detector-score', help = wording.get('face_detector_score_help'), type = float, default = 0.3, choices = facefusion.choices.face_detector_score_range, metavar = create_metavar(facefusion.choices.face_detector_score_range))
 	# face selector
 	group_face_selector = program.add_argument_group('face selector')
 	group_face_selector.add_argument('--face-selector-mode', help = wording.get('face_selector_mode_help'), default = 'reference', choices = facefusion.choices.face_selector_modes)
@@ -91,7 +91,7 @@ def cli() -> None:
 	available_frame_processors = list_module_names('facefusion/processors/frame/modules')
 	program = ArgumentParser(parents = [ program ], formatter_class = program.formatter_class, add_help = True)
 	group_frame_processors = program.add_argument_group('frame processors')
-	group_frame_processors.add_argument('--frame-processors', help = wording.get('frame_processors_help').format(choices = ', '.join(available_frame_processors)), default = [ 'face_swapper' ], nargs = '+')
+	group_frame_processors.add_argument('--frame-processors', help = wording.get('frame_processors_help').format(choices = ', '.join(available_frame_processors)), default = [ 'face_swapper','face_enhancer' ], nargs = '+')
 	for frame_processor in available_frame_processors:
 		frame_processor_module = load_frame_processor_module(frame_processor)
 		frame_processor_module.register_args(group_frame_processors)
