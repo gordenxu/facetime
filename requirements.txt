@@ -11,6 +11,6 @@ pillow==10.0.1
 protobuf==4.24.2
 psutil==5.9.5
 realesrgan==0.3.0
-tensorflow==2.13.0
-torch==2.1.0
+tensorflow==2.15.0
+torch==2.2.1
 tqdm==4.66.1
